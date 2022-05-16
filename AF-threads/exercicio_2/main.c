@@ -22,7 +22,9 @@ void avaliar(double* a, double* b, double* c, int size);
 
 void* thread(void* arg) {   
     int i;
-    for (i=0; i < )
+    for (i=0; i < *((int *)arg); i++) {
+        c[i] = a[i] + b[i];
+    }
     return 0;
 }
 
@@ -91,11 +93,9 @@ int main(int argc, char* argv[]) {
     if (n_threads > a_size) {
             n_threads = a_size;
         }
-    th.divisao[0] = a_size/n_threads;
-    th.divisao[3] = a_size;
 
     for (int i = 0; i < n_threads; ++i) {
-        pthread_create(&threads[i], NULL, thread, (void *)&th.divisao);
+        pthread_create(&threads[i], NULL, thread, (void*)argv);
     }
 
     for (int i = 0; i < n_threads; ++i)
