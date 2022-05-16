@@ -20,8 +20,18 @@ double* load_vector(const char* filename, int* out_size);
 // tenham tamanho size.
 void avaliar(double* a, double* b, double* c, int size);
 
+void* thread(void* arg) {   
+    int i;
+    for (i=0; i < )
+    return 0;
+}
 
 int main(int argc, char* argv[]) {
+    struct divisao_tarefas {
+       int divisao[3]; // divisao inteira, até onde foi o último e tamanho total
+    };
+
+    struct divisao_tarefas th;
     // Gera um resultado diferente a cada execução do programa
     // Se **para fins de teste** quiser gerar sempre o mesmo valor
     // descomente o srand(0)
@@ -44,6 +54,7 @@ int main(int argc, char* argv[]) {
         printf("Número de threads deve ser > 0\n");
         return 1;
     }
+    pthread_t threads[n_threads];
     //Lê números de arquivos para vetores alocados com malloc
     int a_size = 0, b_size = 0;
     double* a = load_vector(argv[2], &a_size);
@@ -76,7 +87,19 @@ int main(int argc, char* argv[]) {
     // ** | IMPORTANTE: avalia o resultado! | **
     //    +---------------------------------+
     avaliar(a, b, c, a_size);
-    
+
+    if (n_threads > a_size) {
+            n_threads = a_size;
+        }
+    th.divisao[0] = a_size/n_threads;
+    th.divisao[3] = a_size;
+
+    for (int i = 0; i < n_threads; ++i) {
+        pthread_create(&threads[i], NULL, thread, (void *)&th.divisao);
+    }
+
+    for (int i = 0; i < n_threads; ++i)
+        pthread_join(threads[i], NULL);
 
     //Importante: libera memória
     free(a);
