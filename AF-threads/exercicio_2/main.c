@@ -20,20 +20,43 @@ double* load_vector(const char* filename, int* out_size);
 // tenham tamanho size.
 void avaliar(double* a, double* b, double* c, int size);
 
+struct variaveis {
+    double a;
+    double b;
+    double c;
+    int div;
+    int mod;
+    int in;
+    int fim;
+};
+
 void* thread(void* arg) {   
     int i;
-    for (i=0; i < *((int *)arg); i++) {
-        c[i] = a[i] + b[i];
+    struct p ((struct *)arg);
+
+    if (*((int *)arg.mod == 0) {
+        for (i=*((int *)arg.in; i < **((int *)arg.fim); i++) {
+            *((int *)arg.c[i] = *((int *)arg.a[i] + *((int *)arg.b[i];
+        }
+        *((int *)arg.in = *((int *)arg.fim;
+        *((int *)arg.fim += (*((int *)arg.div)
+    } else {
+        if *((int *)arg.in == 0 {
+            *((int *)arg.fim += *((int *)arg.mod;
+            *((int *)arg.mod = 0;
+            for (i=*((int *)arg.in; i < **((int *)arg.fim); i++) {
+            *((int *)arg.c[i] = *((int *)arg.a[i] + *((int *)arg.b[i];
+        }
+        *((int *)arg.in = *((int *)arg.fim;
+        *((int *)arg.fim += (*((int *)arg.div)
+        }
     }
     return 0;
 }
 
 int main(int argc, char* argv[]) {
-    struct divisao_tarefas {
-       int divisao[3]; // divisao inteira, até onde foi o último e tamanho total
-    };
+    struct variaveis valores;
 
-    struct divisao_tarefas th;
     // Gera um resultado diferente a cada execução do programa
     // Se **para fins de teste** quiser gerar sempre o mesmo valor
     // descomente o srand(0)
@@ -93,9 +116,18 @@ int main(int argc, char* argv[]) {
     if (n_threads > a_size) {
             n_threads = a_size;
         }
+    
+    struct variaveis valor;
 
+    valor.a = a;
+    valor.b = b;
+    valor.c = c;
+    valor.div = a_size/n_threads;
+    valor.mod = a_size % n_threads;
+    valor.in = 0;
+    valor.fim = valor.div;
     for (int i = 0; i < n_threads; ++i) {
-        pthread_create(&threads[i], NULL, thread, (void*)argv);
+        pthread_create(&threads[i], NULL, thread, (void*)&valor; // recebe a struct
     }
 
     for (int i = 0; i < n_threads; ++i)
