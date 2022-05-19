@@ -4,7 +4,7 @@
 #include <unistd.h>
 
 void* thread(void* arg) {
-    printf("Thread %d iniciada!\n", *((int *)arg));
+    printf("Thread %d iniciada!\n", **((int *)arg));
     fflush(stdout);
     return 0;
 }
