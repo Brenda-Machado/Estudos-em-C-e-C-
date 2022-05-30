@@ -12,9 +12,7 @@ void imprimir_resultados(int n, int** results);
 // Função escrita por um engenheiro
 void compute(int arg) {
     if (arg < 2) {
-        pthread_mutex_lock(&gMtx);
         gValue += arg;
-        pthread_mutex_unlock(&gMtx);
     } else {
         compute(arg - 1);
         compute(arg - 2);
@@ -27,7 +25,7 @@ void* compute_thread(void* arg) {
     int* ret = malloc(sizeof(int));
     pthread_mutex_lock(&gMtx);
     gValue = 0;
-    compute(*((int*)arg));
+    compute(*((int*)arg)); 
     *ret = gValue;
     pthread_mutex_unlock(&gMtx);
     return ret;
