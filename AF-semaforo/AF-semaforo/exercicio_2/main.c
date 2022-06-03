@@ -3,6 +3,8 @@
 #include <semaphore.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
+#include <sys/types.h>
 
 /* ---------- Definições Globais. ---------- */
 #define TEMPO_BASE 1000000
@@ -23,40 +25,71 @@ typedef struct {
 char cabeceiras[2][11] = { { "CONTINENTE" }, { "ILHA" } };
 int total_veiculos;
 int veiculos_turno;
+int entraram_turno;
+
 
 // ToDo: Adicione aque quaisquer outras variávels globais necessárias.
 /* ---------------------------------------- */
 
+sem_t sem_continente;
+sem_t sem_ilha;
+pthread_mutex_t mutex;
 
 /* Inicializa a ponte. */
 void ponte_inicializar() {
 	
-	// ToDo: IMPLEMENTAR!
-
+	sem_init(&sem_continente, 0, 0);
+	sem_init(&sem_ilha, 0, 0);
+	pthread_mutex_init(&mutex, NULL);
 	/* Imprime direção inicial da travessia. NÃO REMOVER! */
 	printf("\n[PONTE] *** Novo sentido da travessia: CONTINENTE -> ILHA. ***\n\n");
 	fflush(stdout);
+	for (int i = 0; i < veiculos_turno; i++) {
+		sem_post(&sem_continente);
+	}
 }
 
 /* Função executada pelo veículo para ENTRAR em uma cabeceira da ponte. */
 void ponte_entrar(veiculo_t *v) {
-	
-	// ToDo: IMPLEMENTAR!
+	if (v->cabeceira == CONTINENTE) {
+		sem_wait(&sem_continente);
+	}
+	else {
+		sem_wait(&sem_ilha);
+	}
 }
 
 /* Função executada pelo veículo para SAIR de uma cabeceira da ponte. */
 void ponte_sair(veiculo_t *v) {
 
-	// ToDo: IMPLEMENTAR!
+	pthread_mutex_lock(&mutex);
+	entraram_turno++;
+
+	if (entraram_turno == veiculos_turno) {
+		entraram_turno = 0;
 	/* Você deverá imprimir a nova direção da travessia quando for necessário! */	
-	printf("\n[PONTE] *** Novo sentido da travessia: %s -> %s. ***\n\n", cabeceiras[v->cabeceira], cabeceiras[!v->cabeceira]);
-	fflush(stdout);
+		printf("\n[PONTE] *** Novo sentido da travessia: %s -> %s. ***\n\n", cabeceiras[v->cabeceira], cabeceiras[!v->cabeceira]);
+		fflush(stdout);
+		if (v->cabeceira == ILHA) { 
+			for (int i = 0; i < veiculos_turno; i++) {
+				sem_post(&sem_ilha);
+			}
+		} else {
+			for (int i = 0; i < veiculos_turno; i++) {
+				sem_post(&sem_continente);
+		}
+	 }
+	}
+	pthread_mutex_unlock(&mutex);
 }
+
 
 /* FINALIZA a ponte. */
 void ponte_finalizar() {
 
-	// ToDo: IMPLEMENTAR!
+	sem_destroy(&sem_continente);
+	sem_destroy(&sem_ilha);
+	pthread_mutex_destroy(&mutex);
 	
 	/* Imprime fim da execução! */
 	printf("[PONTE] FIM!\n\n");
