@@ -3,15 +3,13 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
-
+#include <semaphore.h>
 #include "student.h"
 #include "config.h"
 #include "worker_gate.h"
+#include "worker_gate.c"
 #include "globals.h"
-#include "table.h"
-
-sem_t bacia; // dois estudantes da mesma fila não podem se servir da mesma bacia, mas dois de filas diferentes sim
-pthread_mutex_t assento; // apenas um estudan
+#include "table.c"
 
 void* student_run(void *arg)
 {
@@ -24,6 +22,7 @@ void* student_run(void *arg)
     student_leave(self, tables);
 
     pthread_exit(NULL);
+
 };
 
 void student_seat(student_t *self, table_t *table)
@@ -33,7 +32,7 @@ void student_seat(student_t *self, table_t *table)
 
 void student_serve(student_t *self)
 {
-    /* Insira sua lógica aqui */
+    //
 }
 
 void student_leave(student_t *self, table_t *table)
