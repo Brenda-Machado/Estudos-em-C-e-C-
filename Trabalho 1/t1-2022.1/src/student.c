@@ -10,6 +10,9 @@
 #include "globals.h"
 #include "table.h"
 
+sem_t bacia; // dois estudantes da mesma fila não podem se servir da mesma bacia, mas dois de filas diferentes sim
+pthread_mutex_t assento; // apenas um estudan
+
 void* student_run(void *arg)
 {
     student_t *self = (student_t*) arg;
@@ -24,8 +27,8 @@ void* student_run(void *arg)
 };
 
 void student_seat(student_t *self, table_t *table)
-{
-    /* Insira sua lógica aqui */
+{   
+    table->_empty_seats--;
 }
 
 void student_serve(student_t *self)
@@ -35,7 +38,7 @@ void student_serve(student_t *self)
 
 void student_leave(student_t *self, table_t *table)
 {
-    /* Insira sua lógica aqui */
+    table->_empty_seats++;
 }
 
 /* --------------------------------------------------------- */

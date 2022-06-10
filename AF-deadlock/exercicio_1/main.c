@@ -1,3 +1,5 @@
+// Brenda e Lucas V.
+
 #include <stdio.h>
 #include <semaphore.h>
 #include <pthread.h>

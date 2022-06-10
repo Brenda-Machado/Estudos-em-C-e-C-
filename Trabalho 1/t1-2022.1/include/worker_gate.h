@@ -5,12 +5,6 @@
 #include "student.h"
 
 
-// Na catraca, apenas um aluno por vez passa, logo um mutex
-// Controle de quando os alunos entram, se todas as filas estiverem cheias, eles esperam, logo um semáforo
-
-sem_t entrada_restaurante;
-pthread_mutex_t catraca;
-
 typedef struct worker_gate
 {
     
