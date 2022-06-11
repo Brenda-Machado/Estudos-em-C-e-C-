@@ -1,14 +1,18 @@
 #include <stdlib.h>
-
+#include "globals.c"
 #include "chef.h"
 #include "config.h"
+#include "buffet.c"
+
 
 void *chef_run()
-{
-    /* Insira sua lógica aqui */
-    while (TRUE)
+{   
+    buffet_t *buffet = globals_get_buffets();
+
+    while (buffet_aberto == TRUE)
     {
-        msleep(5000); /* Pode retirar este sleep quando implementar a solução! */
+        chef_check_food();
+        msleep(5000);
     }
     
     pthread_exit(NULL);
@@ -17,11 +21,17 @@ void *chef_run()
 
 void chef_put_food()
 {
-    /* Insira sua lógica aqui */
+    for (i = 0; i < numero_buffets; i++)
+    {
+        //temporario -> colocar só onde acabou a comida
+        for(j = 0; j < 5; j++)
+            buffet[i]._meal[j] = 40;
 }
 void chef_check_food()
 {
-    /* Insira sua lógica aqui */
+    if (tem_comida == FALSE) {
+        chef_put_food();
+    }
 }
 
 /* --------------------------------------------------------- */
@@ -29,7 +39,7 @@ void chef_check_food()
 /* --------------------------------------------------------- */
 
 void chef_init(chef_t *self)
-{
+{       
     pthread_create(&self->thread, NULL, chef_run, NULL);
 }
 

@@ -11,8 +11,6 @@
 int comida_buffet = 1;
 int fila_cheia = 0;
 
-
-
 void worker_gate_look_queue() // verifica se as filas estão cheias
 {   
 
@@ -32,7 +30,11 @@ void worker_gate_remove_student() // retira um estudante da fila
 
 void worker_gate_look_buffet() // verifica se há comida no buffet
 {   
-    //
+    if (tem_comida == TRUE) {
+        comida_buffet = 1;
+    } else {
+        comida_buffet = 0;
+    }
 }
 
 void worker_gate_insert_queue_buffet(student_t *student) // estudante vai para o buffet
@@ -56,7 +58,6 @@ void *worker_gate_run(void *arg)
         worker_gate_look_queue();
         if (comida_buffet == 1 && fila_cheia == 0) 
             worker_gate_remove_student();
-        msleep(5000); /* Pode retirar este sleep quando implementar a solução! */
     }
 
     pthread_exit(NULL);

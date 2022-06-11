@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "buffet.h"
 #include "config.h"
-
+#include "globals.c"
 
 void *buffet_run(void *arg)
 {   
@@ -24,6 +24,7 @@ void *buffet_run(void *arg)
 void buffet_init(buffet_t *self, int number_of_buffets)
 {
     int i = 0, j = 0;
+    numero_buffets = number_of_buffets;
     for (i = 0; i < number_of_buffets; i++)
     {
         /*A fila possui um ID*/
@@ -56,6 +57,30 @@ int buffet_queue_insert(buffet_t *self, student_t *student)
             self[student->_id_buffet].queue_left[0] = student->_id;
             student->_buffet_position = 0;
             return TRUE;
+        } /* Verifica se a segunda posição está vaga */
+        else if (!self[student->_id_buffet].queue_left[1])
+        {
+            self[student->_id_buffet].queue_left[1] = student->_id;
+            student->_buffet_position = 1;
+            return TRUE;
+        } /* Verifica se a terceira posição está vaga */
+        else if (!self[student->_id_buffet].queue_left[2])
+        {
+            self[student->_id_buffet].queue_left[2] = student->_id;
+            student->_buffet_position = 2;
+            return TRUE;
+        } /* Verifica se a quarta posição está vaga */
+        else if (!self[student->_id_buffet].queue_left[3])
+        {
+            self[student->_id_buffet].queue_left[3] = student->_id;
+            student->_buffet_position = 3;
+            return TRUE;
+        } /* Verifica se a quinta e última posição está vaga */
+        else if (!self[student->_id_buffet].queue_left[4])
+        {
+            self[student->_id_buffet].queue_left[4] = student->_id;
+            student->_buffet_position = 4;
+            return TRUE;
         }
         return FALSE;
     }
@@ -66,6 +91,30 @@ int buffet_queue_insert(buffet_t *self, student_t *student)
             /* Verifica se a primeira posição está vaga */
             self[student->_id_buffet].queue_right[0] = student->_id;
             student->_buffet_position = 0;
+            return TRUE;
+        } /* Verifica se a segunda posição está vaga */
+        else if (!self[student->_id_buffet].queue_right[1])
+        {
+            self[student->_id_buffet].queue_right[1] = student->_id;
+            student->_buffet_position = 1;
+            return TRUE;
+        } /* Verifica se a terceira posição está vaga */
+        else if (!self[student->_id_buffet].queue_right[2])
+        {
+            self[student->_id_buffet].queue_right[2] = student->_id;
+            student->_buffet_position = 2;
+            return TRUE;
+        } /* Verifica se a quarta posição está vaga */
+        else if (!self[student->_id_buffet].queue_right[3])
+        {
+            self[student->_id_buffet].queue_right[3] = student->_id;
+            student->_buffet_position = 3;
+            return TRUE;
+        } /* Verifica se a quinta e última posição está vaga */
+        else if (!self[student->_id_buffet].queue_right[4])
+        {
+            self[student->_id_buffet].queue_right[4] = student->_id;
+            student->_buffet_position = 4;
             return TRUE;
         }
         return FALSE;
@@ -99,7 +148,7 @@ void buffet_next_step(buffet_t *self, student_t *student)
 /* --------------------------------------------------------- */
 
 void buffet_finalize(buffet_t *self, int number_of_buffets)
-{
+{   buffet_aberto = FALSE;
     /* Espera as threads se encerrarem...*/
     for (int i = 0; i < number_of_buffets; i++)
     {
