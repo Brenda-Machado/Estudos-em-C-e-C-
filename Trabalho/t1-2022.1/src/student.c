@@ -11,13 +11,16 @@
 #include "table.h"
 
 pthread_mutex_t fila_catraca;
+buffet_t *buffet_id_ = NULL;
 
 void* student_run(void *arg)
 {
     student_t *self = (student_t*) arg;
     table_t *tables  = globals_get_table();
     pthread_mutex_init(&fila_catraca, 0);
-    
+    queue_t *queue = globals_get_queue();
+
+    queue_insert(queue, self);
     worker_gate_insert_queue_buffet(self);
     student_serve(self);
     student_seat(self, tables);
@@ -35,7 +38,12 @@ void student_seat(student_t *self, table_t *table)
 
 void student_serve(student_t *self)
 { //semaforo para a bacia
-
+    buffet_t *buffet_ = globals_get_buffets();
+    buffet_id_ = &buffet_[self->_id_buffet];
+    while (self->_buffet_position != 4) {
+        msleep(10);
+        buffet_next_step(buffet_id_, self);
+    }
 }
 
 void student_leave(student_t *self, table_t *table)
