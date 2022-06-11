@@ -1,10 +1,10 @@
 #include <stdlib.h>
 #include "buffet.h"
 #include "config.h"
-#include "globals.c"
+#include "globals.h"
 
 void *buffet_run(void *arg)
-{   
+{   tem_comida = TRUE;
     int all_students_entered = FALSE;
     buffet_t *self = (buffet_t*) arg;
     
@@ -22,7 +22,8 @@ void *buffet_run(void *arg)
 }
 
 void buffet_init(buffet_t *self, int number_of_buffets)
-{
+{   
+
     int i = 0, j = 0;
     numero_buffets = number_of_buffets;
     for (i = 0; i < number_of_buffets; i++)
@@ -43,6 +44,7 @@ void buffet_init(buffet_t *self, int number_of_buffets)
 
         pthread_create(&self[i].thread, NULL, buffet_run, &self[i]);
     }
+    buffet_aberto = TRUE;
 }
 
 
@@ -51,35 +53,11 @@ int buffet_queue_insert(buffet_t *self, student_t *student)
     /* Se o estudante vai para a fila esquerda */
     if (student->left_or_right == 'L') 
     {
-        /* Verifica se a primeira posição está vaga */
+        /* Verifica se a última posição está vaga */
         if (!self[student->_id_buffet].queue_left[0])
         {
             self[student->_id_buffet].queue_left[0] = student->_id;
             student->_buffet_position = 0;
-            return TRUE;
-        } /* Verifica se a segunda posição está vaga */
-        else if (!self[student->_id_buffet].queue_left[1])
-        {
-            self[student->_id_buffet].queue_left[1] = student->_id;
-            student->_buffet_position = 1;
-            return TRUE;
-        } /* Verifica se a terceira posição está vaga */
-        else if (!self[student->_id_buffet].queue_left[2])
-        {
-            self[student->_id_buffet].queue_left[2] = student->_id;
-            student->_buffet_position = 2;
-            return TRUE;
-        } /* Verifica se a quarta posição está vaga */
-        else if (!self[student->_id_buffet].queue_left[3])
-        {
-            self[student->_id_buffet].queue_left[3] = student->_id;
-            student->_buffet_position = 3;
-            return TRUE;
-        } /* Verifica se a quinta e última posição está vaga */
-        else if (!self[student->_id_buffet].queue_left[4])
-        {
-            self[student->_id_buffet].queue_left[4] = student->_id;
-            student->_buffet_position = 4;
             return TRUE;
         }
         return FALSE;
@@ -92,31 +70,7 @@ int buffet_queue_insert(buffet_t *self, student_t *student)
             self[student->_id_buffet].queue_right[0] = student->_id;
             student->_buffet_position = 0;
             return TRUE;
-        } /* Verifica se a segunda posição está vaga */
-        else if (!self[student->_id_buffet].queue_right[1])
-        {
-            self[student->_id_buffet].queue_right[1] = student->_id;
-            student->_buffet_position = 1;
-            return TRUE;
-        } /* Verifica se a terceira posição está vaga */
-        else if (!self[student->_id_buffet].queue_right[2])
-        {
-            self[student->_id_buffet].queue_right[2] = student->_id;
-            student->_buffet_position = 2;
-            return TRUE;
-        } /* Verifica se a quarta posição está vaga */
-        else if (!self[student->_id_buffet].queue_right[3])
-        {
-            self[student->_id_buffet].queue_right[3] = student->_id;
-            student->_buffet_position = 3;
-            return TRUE;
-        } /* Verifica se a quinta e última posição está vaga */
-        else if (!self[student->_id_buffet].queue_right[4])
-        {
-            self[student->_id_buffet].queue_right[4] = student->_id;
-            student->_buffet_position = 4;
-            return TRUE;
-        }
+        } 
         return FALSE;
     }
 }

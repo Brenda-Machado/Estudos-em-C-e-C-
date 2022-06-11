@@ -1,18 +1,16 @@
 #include <stdlib.h>
-#include "globals.c"
+#include "globals.h"
 #include "chef.h"
 #include "config.h"
-#include "buffet.c"
+#include "buffet.h"
 
 
 void *chef_run()
-{   
-    buffet_t *buffet = globals_get_buffets();
-
+{    
+    msleep(25000); 
     while (buffet_aberto == TRUE)
     {
         chef_check_food();
-        msleep(5000);
     }
     
     pthread_exit(NULL);
@@ -20,12 +18,14 @@ void *chef_run()
 
 
 void chef_put_food()
-{
-    for (i = 0; i < numero_buffets; i++)
+{   
+   buffet_t *buffet = globals_get_buffets();
+    for (int i = 0; i < numero_buffets; i++)
     {
         //temporario -> colocar só onde acabou a comida
-        for(j = 0; j < 5; j++)
+        for(int j = 0; j < 5; j++)
             buffet[i]._meal[j] = 40;
+    }
 }
 void chef_check_food()
 {

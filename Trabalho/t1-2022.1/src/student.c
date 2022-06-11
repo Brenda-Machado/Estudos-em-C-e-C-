@@ -7,36 +7,39 @@
 #include "student.h"
 #include "config.h"
 #include "worker_gate.h"
-#include "worker_gate.c"
 #include "globals.h"
-#include "table.c"
+#include "table.h"
+
+pthread_mutex_t fila_catraca;
 
 void* student_run(void *arg)
 {
     student_t *self = (student_t*) arg;
     table_t *tables  = globals_get_table();
-
+    pthread_mutex_init(&fila_catraca, 0);
+    
     worker_gate_insert_queue_buffet(self);
     student_serve(self);
     student_seat(self, tables);
     student_leave(self, tables);
 
+    pthread_mutex_destroy(&fila_catraca);
     pthread_exit(NULL);
 
 };
 
 void student_seat(student_t *self, table_t *table)
-{   
+{   //semaforo wait
     table->_empty_seats--;
 }
 
 void student_serve(student_t *self)
-{
-    //
+{ //semaforo para a bacia
+
 }
 
 void student_leave(student_t *self, table_t *table)
-{
+{ //provavelmente semaforo post
     table->_empty_seats++;
 }
 

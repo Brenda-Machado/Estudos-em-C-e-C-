@@ -4,6 +4,11 @@
 #include "queue.h"
 #include "table.h"
 #include "buffet.h"
+#include <stdbool.h>
+
+bool buffet_aberto;
+bool tem_comida;
+int numero_buffets;
 
 /**
  * @brief Inicia uma fila (de modo global)

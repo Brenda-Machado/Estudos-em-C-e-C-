@@ -4,9 +4,6 @@
 queue_t *students_queue = NULL;
 table_t *table = NULL;
 buffet_t *buffets_ref = NULL;
-bool buffet_aberto = TRUE;  //inicia verdadeiro, já que o buffet está aberto
-bool tem_comida = TRUE;
-int numero_buffets;
 
 int students_number = 0;
 
