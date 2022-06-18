@@ -115,7 +115,7 @@ void buffet_finalize(buffet_t *self, int number_of_buffets)
     }
     for (int i = 0; i < number_of_buffets*5; i++)
     {
-        sem_destroy(&bacia[i])
+        sem_destroy(&bacia[i]);
     }
     
     /*Libera a memória.*/
