@@ -2,6 +2,7 @@
 #include "buffet.h"
 #include "config.h"
 #include "globals.h"
+#include <semaphore.h>
 
 void *buffet_run(void *arg)
 {   tem_comida = TRUE;
@@ -26,6 +27,11 @@ void buffet_init(buffet_t *self, int number_of_buffets)
 
     int i = 0, j = 0;
     numero_buffets = number_of_buffets;
+    for (i = 0; i < number_of_buffets*5; i++)
+    {
+        /* Cada bacia tem seu próprio semáforo. */
+        sem_init(&bacia[i]);
+    }
     for (i = 0; i < number_of_buffets; i++)
     {
         /*A fila possui um ID*/
@@ -107,6 +113,10 @@ void buffet_finalize(buffet_t *self, int number_of_buffets)
     for (int i = 0; i < number_of_buffets; i++)
     {
         pthread_join(self[i].thread, NULL);
+    }
+    for (int i = 0; i < number_of_buffets*5; i++)
+    {
+        sem_destroy(&bacia[i]);
     }
     
     /*Libera a memória.*/
