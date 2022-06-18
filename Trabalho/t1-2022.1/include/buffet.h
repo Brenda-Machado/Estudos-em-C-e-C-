@@ -5,6 +5,9 @@
 
 #include "queue.h"
 
+/* semáforo para cada bacia */
+sem_t bacia[numero_buffets*5];
+
 
 typedef struct buffet
 {

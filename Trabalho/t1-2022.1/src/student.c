@@ -10,14 +10,13 @@
 #include "globals.h"
 #include "table.h"
 
-pthread_mutex_t fila_catraca;
-buffet_t *buffet_id_ = NULL;
+buffet_t *buffet_aluno;
 
 void* student_run(void *arg)
 {
     student_t *self = (student_t*) arg;
     table_t *tables  = globals_get_table();
-    pthread_mutex_init(&fila_catraca, 0);
+    
     queue_t *queue = globals_get_queue();
 
     queue_insert(queue, self);
@@ -26,7 +25,6 @@ void* student_run(void *arg)
     student_seat(self, tables);
     student_leave(self, tables);
 
-    pthread_mutex_destroy(&fila_catraca);
     pthread_exit(NULL);
 
 };
@@ -37,12 +35,18 @@ void student_seat(student_t *self, table_t *table)
 }
 
 void student_serve(student_t *self)
-{ //semaforo para a bacia
+{   /* verifica a posição do aluno no buffet e se ele quer se servir daquela bacia */
     buffet_t *buffet_ = globals_get_buffets();
-    buffet_id_ = &buffet_[self->_id_buffet];
-    while (self->_buffet_position != 4) {
-        msleep(10);
-        buffet_next_step(buffet_id_, self);
+    buffet_aluno = &buffet_[self->_id_buffet];
+    while (self->_buffet_position < 5) {
+        if (self->_wishes[self->_buffet_position] == 1) {
+                /* bloqueia a bacia para impedir que os valores sejam modificados por outros alunos */
+                sem_wait(&bacia[_id_buffet*5+_buffet_position]);
+                buffet_aluno->_meal[self->_buffet_position] -= 1;
+                sem_post(&bacia[_id_buffet*5+_buffet_position]);
+        }
+        /* avança para a próxima */
+        buffet_next_step(buffet_aluno, self);
     }
 }
 

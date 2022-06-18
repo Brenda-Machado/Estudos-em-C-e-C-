@@ -33,8 +33,25 @@ filhos terminem de executar).
 
 
 int main(int argc, char** argv) {
+    for(int i =0; i < 4; i++) {
+        printf("\n%i", getpid());
+        fflush(stdout);
+        if(fork() != 0) {
+            printf("\n%i", getpid());
+            fflush(stdout);
+            for (int j=i; j < 4; j++)
+            {   printf("\n%i", getpid());
+                fflush(stdout);
+                if(fork() == 0){
+                    printf("\n%i", getpid());
+                    fflush(stdout);
+                    break;
+                } break;
+            } 
+        }
+    }
 
-    for(int i=0; i<2;i++ ){
+/*     for(int i=0; i<2;i++ ){
 
         pid_t pid;
         pid = fork();
@@ -52,7 +69,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    printf("Processo pai finalizado!\n");
+    printf("Processo pai finalizado!\n"); */
 
     // ....
 
