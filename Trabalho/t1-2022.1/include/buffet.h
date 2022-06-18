@@ -8,8 +8,11 @@
 #include <semaphore.h>
 
 /* semáforo para cada bacia */
-sem_t bacia[numero_buffets*5];
-
+sem_t bacia[50]; 
+sem_t cadeiras[1000]; /* um semáforo por cadeira */
+/* como não há como importar o número de buffets na .h sem gerar uma herança circular
+número grande para evitar problemas com a memória, o mesmo com as cadeiras, a variável numero de cadeiras é
+modificada e isso estava dando um problema na criação */
 
 typedef struct buffet
 {

@@ -10,7 +10,7 @@ int id_da_bacia; // id da bacia para repor
 
 void *chef_run()
 {   /* Espera o buffet abrir. */
-    while (buffet_aberto == NULL) {
+    while (buffet_aberto != TRUE) {
         msleep(1); 
     } 
     while (buffet_aberto == TRUE) /* variável mantida pelo próprio buffet, se fechar, o chef para de trabalhar */

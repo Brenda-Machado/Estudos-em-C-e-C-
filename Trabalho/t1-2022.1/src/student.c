@@ -9,29 +9,53 @@
 #include "worker_gate.h"
 #include "globals.h"
 #include "table.h"
+#include "buffet.h"
 
 buffet_t *buffet_aluno;
+int sentado; /* id da caddeira que o aluno ocupou */
+int mesa; /* id da mesa que o aluno está */
 
 void* student_run(void *arg)
 {
     student_t *self = (student_t*) arg;
     table_t *tables  = globals_get_table();
+    sentado = 0;
     
     queue_t *queue = globals_get_queue();
 
+    /* entra na fila da catraca */
     queue_insert(queue, self);
     worker_gate_insert_queue_buffet(self);
     student_serve(self);
     student_seat(self, tables);
+    msleep(200); /* aluno comendo */
     student_leave(self, tables);
 
+    /* estudante foi embora */
     pthread_exit(NULL);
 
 };
 
 void student_seat(student_t *self, table_t *table)
-{   //semaforo wait
-    table->_empty_seats--;
+{   /* aluno espera se não houver mesas disponíveis */
+    while (sentado == 0) {
+        for (int i = 0; i < numero_de_mesas; i++) {
+            /* procura uma mesa que não esteja ocupada */
+            if (table[i]._empty_seats != 0) {
+                for (int j = 0; j < cadeiras_por_mesa; j++) {
+                    /* tenta ocupar uma cadeira vazia */
+                    if (sem_trywait(&cadeiras[i*numero_de_mesas+j])) {
+                        /* conseguiu */
+                        sentado = i*numero_de_mesas+j;
+                        mesa = i;
+                        /* diminui o número de assentos disponíveis daquela mesa */
+                        table[i]._empty_seats -= 1;
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void student_serve(student_t *self)
@@ -41,9 +65,9 @@ void student_serve(student_t *self)
     while (self->_buffet_position < 5) {
         if (self->_wishes[self->_buffet_position] == 1) {
                 /* bloqueia a bacia para impedir que os valores sejam modificados por outros alunos */
-                sem_wait(&bacia[_id_buffet*5+_buffet_position]);
+                sem_wait(&bacia[self->_id_buffet*5+self->_buffet_position]);
                 buffet_aluno->_meal[self->_buffet_position] -= 1;
-                sem_post(&bacia[_id_buffet*5+_buffet_position]);
+                sem_post(&bacia[self->_id_buffet*5+self->_buffet_position]);
         }
         /* avança para a próxima */
         buffet_next_step(buffet_aluno, self);
@@ -51,8 +75,11 @@ void student_serve(student_t *self)
 }
 
 void student_leave(student_t *self, table_t *table)
-{ //provavelmente semaforo post
-    table->_empty_seats++;
+{   
+    /* libera o lugar para o próximo aluno */
+    sem_post(&cadeiras[sentado]);
+    table[mesa]._empty_seats += 1;
+
 }
 
 /* --------------------------------------------------------- */

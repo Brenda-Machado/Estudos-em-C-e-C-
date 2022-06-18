@@ -5,6 +5,7 @@ queue_t *students_queue = NULL;
 table_t *table = NULL;
 buffet_t *buffets_ref = NULL;
 
+
 int students_number = 0;
 
 void globals_set_queue(queue_t *queue)
