@@ -2,6 +2,7 @@
 #include "buffet.h"
 #include "config.h"
 #include "globals.h"
+#include <semaphore.h>
 
 void *buffet_run(void *arg)
 {   tem_comida = TRUE;
@@ -29,7 +30,7 @@ void buffet_init(buffet_t *self, int number_of_buffets)
     for (i = 0; i < number_of_buffets*5; i++)
     {
         /* Cada bacia tem seu próprio semáforo. */
-        sem_init(&bacia[i]);
+        sem_init(&bacia[i], 0, 0);
     }
     for (i = 0; i < number_of_buffets; i++)
     {

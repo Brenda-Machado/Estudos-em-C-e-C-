@@ -41,9 +41,9 @@ void student_serve(student_t *self)
     while (self->_buffet_position < 5) {
         if (self->_wishes[self->_buffet_position] == 1) {
                 /* bloqueia a bacia para impedir que os valores sejam modificados por outros alunos */
-                sem_wait(&bacia[_id_buffet*5+_buffet_position]);
+                sem_wait(&bacia[self->_id_buffet*5+self->_buffet_position]);
                 buffet_aluno->_meal[self->_buffet_position] -= 1;
-                sem_post(&bacia[_id_buffet*5+_buffet_position]);
+                sem_post(&bacia[self->_id_buffet*5+self->_buffet_position]);
         }
         /* avança para a próxima */
         buffet_next_step(buffet_aluno, self);
