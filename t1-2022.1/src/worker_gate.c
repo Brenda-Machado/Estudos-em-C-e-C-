@@ -8,6 +8,7 @@
 
 
 pthread_mutex_t catraca;
+sem_t fila;
 sem_t carregar;
 int buffet_id;
 char direcao;
@@ -31,6 +32,10 @@ void worker_gate_remove_student() // retira um estudante da fila
     /* tira o estudante da fila e o passa pela catraca */
     queue_t *queue = globals_get_queue();
     queue_remove(queue);
+    /* libera o semáforo para que os estudantes possam tentar passar de novo */
+    for (int i = 0; i < queue->_length; i++) {
+        sem_post(&fila);
+    }
 }
 
 void worker_gate_look_buffet() // verifica se há lugares livres no buffet
@@ -81,12 +86,17 @@ void worker_gate_insert_queue_buffet(student_t *student) // estudante vai para o
             pthread_mutex_unlock(&catraca);
             worker_gate_remove_student();
         }
+        else {
+            /* se não, esperam na fila */
+            sem_wait(&fila);
+        }
     }
 }
 
 void *worker_gate_run(void *arg)
 {  
     pthread_mutex_init(&catraca, 0);
+    sem_init(&fila, 0, 0);
     sem_init(&carregar, 0, 0);
     queue_t *queue = globals_get_queue();
     number_students = globals_get_students();
@@ -103,6 +113,8 @@ void *worker_gate_run(void *arg)
     while (all_students_entered == FALSE) {   
         worker_gate_look_queue();
     }
+
+    sem_destroy(&fila);
     sem_destroy(&carregar);
     pthread_mutex_destroy(&catraca);
     pthread_exit(NULL);
