@@ -25,6 +25,12 @@ void *buffet_run(void *arg)
 void buffet_init(buffet_t *self, int number_of_buffets)
 {   
 
+    for (int i = 0; i < numero_de_mesas*cadeiras_por_mesa; i++) {
+        /* inicializar todas as cadeiras do restaurante com um semáforo */
+        sem_init(&cadeiras[i], 0, 0); 
+        /* como não há um file restaurante ou coisa parecida, achei melhor pôr no buffet mesmo */
+    }
+
     int i = 0, j = 0;
     numero_buffets = number_of_buffets;
     for (i = 0; i < number_of_buffets*5; i++)
@@ -117,6 +123,9 @@ void buffet_finalize(buffet_t *self, int number_of_buffets)
     for (int i = 0; i < number_of_buffets*5; i++)
     {
         sem_destroy(&bacia[i]);
+    }
+    for (int i = 0; i < numero_de_mesas*cadeiras_por_mesa; i++) {
+        sem_destroy(&cadeiras[i]);         
     }
     
     /*Libera a memória.*/

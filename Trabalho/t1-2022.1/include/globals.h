@@ -9,6 +9,8 @@
 bool buffet_aberto;
 bool tem_comida;
 int numero_buffets;
+int numero_de_mesas;
+int cadeiras_por_mesa;
 
 /**
  * @brief Inicia uma fila (de modo global)
